@@ -36,6 +36,7 @@ mod models;
 mod storage;
 mod uri;
 mod verification;
+mod ui;
 
 pub use error::{Error, Result};
 

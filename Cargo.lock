@@ -1548,6 +1548,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
 
 [[package]]
+name = "hex_color"
+version = "3.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d37f101bf4c633f7ca2e4b5e136050314503dd198e78e325ea602c327c484ef0"
+dependencies = [
+ "rand 0.8.5",
+]
+
+[[package]]
 name = "hmac"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4028,15 +4037,19 @@ dependencies = [
  "base64 0.22.1",
  "blake3",
  "chrono",
+ "cocoa",
  "dashmap",
  "ed25519-dalek",
  "flate2",
  "futures",
  "hex",
+ "hex_color",
  "humantime-serde",
  "lru",
  "mime-infer",
  "mime_guess",
+ "objc",
+ "rand 0.8.5",
  "rayon",
  "regex",
  "reqwest",
