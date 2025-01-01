@@ -90,6 +90,14 @@ pub async fn load<R: Runtime>(app: AppHandle<R>, options: LoadOptions) -> Result
         })?;
     }
 
+    #[cfg(target_os = "windows")]
+    {
+        let window_clone = window.clone();
+        window.run_on_main_thread(move || {
+            ui::windows::posit::setup_window(window_clone);
+        })?;
+    }
+
     if let Some(main_window) = app.get_webview_window("main") {
         main_window.close()?;
         tracing::info!("Closing `main` window");

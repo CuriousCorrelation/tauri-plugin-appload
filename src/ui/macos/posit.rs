@@ -63,13 +63,13 @@ impl<R: Runtime> MacosWindow<R> {
     fn setup_theme_listener(&self) {
         let window = self.window.clone();
         self.window.listen("hopp-bg-changed", move |event| {
-            if let color_str = event.payload() {
-                if let Ok(color_str) = serde_json::from_str::<&str>(color_str) {
-                    if let Ok(color) = HexColor::parse_rgb(color_str.trim()) {
-                        let macos_window =
-                            MacosWindow::new(window.clone(), LogicalPosition::new(15.0, 23.0));
-                        macos_window.update_theme(color);
-                    }
+            let color_str = event.payload();
+
+            if let Ok(color_str) = serde_json::from_str::<&str>(color_str) {
+                if let Ok(color) = HexColor::parse_rgb(color_str.trim()) {
+                    let macos_window =
+                        MacosWindow::new(window.clone(), LogicalPosition::new(15.0, 23.0));
+                    macos_window.update_theme(color);
                 }
             }
         });

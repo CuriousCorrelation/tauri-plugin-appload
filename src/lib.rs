@@ -34,9 +34,9 @@ mod error;
 mod global;
 mod models;
 mod storage;
+mod ui;
 mod uri;
 mod verification;
-mod ui;
 
 pub use error::{Error, Result};
 
