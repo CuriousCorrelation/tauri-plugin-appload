@@ -21,10 +21,15 @@ impl UriHandler {
     }
 
     fn determine_mime(path: &str) -> &str {
-        mime_guess::from_path(path)
-            .first_raw()
-            .unwrap_or("application/octet-stream")
+        if path.is_empty() || path == "index.html" {
+            "text/html; charset=utf-8"
+        } else {
+            mime_guess::from_path(path)
+                .first_raw()
+                .unwrap_or("application/octet-stream")
+        }
     }
+
 
     pub async fn handle(&self, uri: &Uri) -> Result<Response<Vec<u8>>> {
         let host = uri.host().unwrap_or_default();
@@ -37,6 +42,8 @@ impl UriHandler {
                 Response::builder()
                     .status(200)
                     .header("content-type", mime_type)
+                    .header("content-security-policy", "default-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src *")
+                    .header("x-content-type-options", "nosniff")
                     .body(content)
             }
             Err(e) => {
