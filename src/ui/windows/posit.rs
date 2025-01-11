@@ -63,7 +63,7 @@ impl<R: Runtime> WindowsWindow<R> {
     }
 
     fn set_caption_color(&self, color: HexColor) {
-        if let Ok(version) = WindowsVersion::detect() {
+        if let Some(version) = WindowsVersion::detect() {
             if version >= WindowsVersion::new(10, 0, 22000) {
                 unsafe {
                     let color_ref = self.hex_color_to_colorref(color);
