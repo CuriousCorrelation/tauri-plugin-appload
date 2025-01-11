@@ -20,7 +20,8 @@ pub struct WindowsWindow<R: Runtime> {
 
 impl<R: Runtime> WindowsWindow<R> {
     pub fn new(window: WebviewWindow<R>) -> Self {
-        let hwnd = HWND(window.hwnd().expect("Failed to get window handle") as *mut c_void);
+	let hwnd = window.hwnd().expect("Failed to get window handle");
+	let hwnd = HWND(hwnd.0);
         Self { window, hwnd }
     }
 
