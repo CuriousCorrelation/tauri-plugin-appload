@@ -7,27 +7,27 @@ use tauri::{
 use crate::{DownloadOptions, DownloadResponse, LoadOptions, LoadResponse};
 
 #[cfg(target_os = "ios")]
-tauri::ios_plugin_binding!(init_plugin_hoppscotch_appload);
+tauri::ios_plugin_binding!(init_plugin_appload);
 
 #[cfg(target_os = "android")]
-const PLUGIN_IDENTIFIER: &str = "app.tauri.hoppscotch.appload";
+const PLUGIN_IDENTIFIER: &str = "app.tauri.appload";
 
 /// Initialize plugin for mobile platforms
 pub fn init<R: Runtime, C: DeserializeOwned>(
     _app: &AppHandle<R>,
     api: PluginApi<R, C>,
-) -> crate::Result<HoppscotchAppload<R>> {
+) -> crate::Result<Appload<R>> {
     #[cfg(target_os = "android")]
-    let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "HoppscotchAppload")?;
+    let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "Appload")?;
     #[cfg(target_os = "ios")]
-    let handle = api.register_ios_plugin(init_plugin_hoppscotch_appload)?;
-    Ok(HoppscotchAppload(handle))
+    let handle = api.register_ios_plugin(init_plugin_appload)?;
+    Ok(Appload(handle))
 }
 
-/// Mobile implementation of the Hoppscotch app loading plugin
-pub struct HoppscotchAppload<R: Runtime>(PluginHandle<R>);
+/// Mobile implementation of the app loading plugin
+pub struct Appload<R: Runtime>(PluginHandle<R>);
 
-impl<R: Runtime> HoppscotchAppload<R> {
+impl<R: Runtime> Appload<R> {
     /// Download an app bundle
     pub async fn download(&self, options: DownloadOptions) -> crate::Result<DownloadResponse> {
         self.0

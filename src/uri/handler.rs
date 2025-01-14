@@ -1,17 +1,21 @@
 use std::sync::Arc;
 
-use tauri::http::{Response, Uri};
+use tauri::{
+    http::{Response, Uri},
+    Config,
+};
 
 use super::error::Result;
 use crate::cache::CacheManager;
 
 pub struct UriHandler {
     cache: Arc<CacheManager>,
+    config: Config,
 }
 
 impl UriHandler {
-    pub fn new(cache: Arc<CacheManager>) -> Self {
-        Self { cache }
+    pub fn new(cache: Arc<CacheManager>, config: Config) -> Self {
+        Self { cache, config }
     }
 
     async fn fetch_content(&self, host: &str, path: &str) -> Result<Vec<u8>> {
@@ -30,7 +34,6 @@ impl UriHandler {
         }
     }
 
-
     pub async fn handle(&self, uri: &Uri) -> Result<Response<Vec<u8>>> {
         let host = uri.host().unwrap_or_default();
         let path = uri.path().trim_start_matches('/');
@@ -39,18 +42,20 @@ impl UriHandler {
             Ok(content) => {
                 tracing::info!(host = %host, path = %path, "Successfully retrieved file content.");
                 let mime_type = Self::determine_mime(path);
+                let csp = match self.config
+                    .app
+                    .security
+                    .csp.as_ref() {
+                    Some(csp) => csp.to_string(),
+                    None => String::from("null"),
+                };
+
                 Response::builder()
                     .status(200)
                     .header("content-type", mime_type)
                     .header(
                         "content-security-policy",
-                        "default-src blob: data: filesystem: ws: wss: http: https: tauri: 'unsafe-eval' 'unsafe-inline' 'self' customprotocol: asset:; \
-                         script-src * 'self' 'unsafe-eval' 'wasm-unsafe-eval' 'unsafe-inline'; \
-                         connect-src ipc: http://ipc.localhost https://api.hoppscotch.io *; \
-                         font-src https://fonts.gstatic.com data: 'self'; \
-                         img-src 'self' asset: http://asset.localhost blob: data: customprotocol:; \
-                         style-src 'unsafe-inline' 'self' https://fonts.googleapis.com data: asset:; \
-                         worker-src * 'self' data: 'unsafe-eval' blob:;"
+                        csp
                     )
                     .header("Access-Control-Allow-Credentials", "true")
                     .header("x-content-type-options", "nosniff")

@@ -1,12 +1,12 @@
 [package]
-name = "tauri-plugin-hoppscotch-appload"
+name = "tauri-plugin-appload"
 version = "0.1.0"
 authors = [ "CuriousCorrelation" ]
-description = "A Tauri plugin to download and load Hoppscotch web app into WebView"
+description = "A Tauri plugin to download and load web app into WebView"
 edition = "2021"
 rust-version = "1.77.2"
 exclude = ["/examples", "/webview-dist", "/webview-src", "/node_modules"]
-links = "tauri-plugin-hoppscotch-appload"
+links = "tauri-plugin-appload"
 
 [dependencies]
 tauri = { version = "2.0.6", features = ["unstable"] }

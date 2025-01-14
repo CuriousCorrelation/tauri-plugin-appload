@@ -325,7 +325,7 @@
           "const": "deny-ping"
         },
         {
-          "description": "Default permissions for Hoppscotch AppLoad plugin",
+          "description": "Default permissions for AppLoad plugin",
           "type": "string",
           "const": "default"
         }

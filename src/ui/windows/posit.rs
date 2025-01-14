@@ -20,8 +20,8 @@ pub struct WindowsWindow<R: Runtime> {
 
 impl<R: Runtime> WindowsWindow<R> {
     pub fn new(window: WebviewWindow<R>) -> Self {
-	let hwnd = window.hwnd().expect("Failed to get window handle");
-	let hwnd = HWND(hwnd.0);
+        let hwnd = window.hwnd().expect("Failed to get window handle");
+        let hwnd = HWND(hwnd.0);
         Self { window, hwnd }
     }
 
@@ -108,10 +108,7 @@ impl WinThemeAttribute {
     fn new() -> Self {
         let flag = WTNCA_NODRAWCAPTION | WTNCA_NODRAWICON;
         let mask = WTNCA_NODRAWCAPTION | WTNCA_NODRAWICON | WTNCA_NOSYSMENU | WTNCA_NOMIRRORHELP;
-        Self {
-            flag,
-            mask,
-        }
+        Self { flag, mask }
     }
 }
 

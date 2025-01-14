@@ -1,6 +1,6 @@
 ## Default Permission
 
-Default permissions for Hoppscotch AppLoad plugin
+Default permissions for AppLoad plugin
 
 - `allow-load`
 - `allow-download`
@@ -17,7 +17,7 @@ Default permissions for Hoppscotch AppLoad plugin
 <tr>
 <td>
 
-`hoppscotch-appload:allow-download`
+`appload:allow-download`
 
 </td>
 <td>
@@ -30,7 +30,7 @@ Enables the download command without any pre-configured scope.
 <tr>
 <td>
 
-`hoppscotch-appload:deny-download`
+`appload:deny-download`
 
 </td>
 <td>
@@ -43,7 +43,7 @@ Denies the download command without any pre-configured scope.
 <tr>
 <td>
 
-`hoppscotch-appload:allow-load`
+`appload:allow-load`
 
 </td>
 <td>
@@ -56,7 +56,7 @@ Enables the load command without any pre-configured scope.
 <tr>
 <td>
 
-`hoppscotch-appload:deny-load`
+`appload:deny-load`
 
 </td>
 <td>
@@ -69,7 +69,7 @@ Denies the load command without any pre-configured scope.
 <tr>
 <td>
 
-`hoppscotch-appload:allow-ping`
+`appload:allow-ping`
 
 </td>
 <td>
@@ -82,7 +82,7 @@ Enables the ping command without any pre-configured scope.
 <tr>
 <td>
 
-`hoppscotch-appload:deny-ping`
+`appload:deny-ping`
 
 </td>
 <td>

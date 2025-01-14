@@ -1,6 +1,6 @@
 <script>
   import Greet from './lib/Greet.svelte'
-  import { ping } from 'tauri-plugin-hoppscotch-appload-api'
+  import { ping } from 'tauri-plugin-appload-api'
 
 	let response = ''
 

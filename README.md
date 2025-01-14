@@ -1,10 +1,10 @@
-# Tauri Plugin: Hoppscotch AppLoad
+# Tauri Plugin: AppLoad
 
-> A Tauri plugin for downloading and loading Hoppscotch web app bundles into WebView.
+> A Tauri plugin for downloading and loading web app bundles into WebView.
 
 <div align="center">
 
-![GitHub License MIT](https://img.shields.io/github/license/CuriousCorrelation/tauri-plugin-hoppscotch-appload)
+![GitHub License MIT](https://img.shields.io/github/license/CuriousCorrelation/tauri-plugin-appload)
 ![Tauri 2.0](https://img.shields.io/badge/Tauri-2.0-blue)
 [![Rust](https://img.shields.io/badge/Rust-1.77.2+-orange)](https://www.rust-lang.org)
 
@@ -27,12 +27,12 @@ Add the plugin to your project by installing directly from GitHub:
 
 ```toml
 [dependencies]
-tauri-plugin-hoppscotch-appload = { git = "https://github.com/CuriousCorrelation/tauri-plugin-hoppscotch-appload" }
+tauri-plugin-appload = { git = "https://github.com/CuriousCorrelation/tauri-plugin-appload" }
 ```
 
 ``` json
 "dependencies": {
-  "@hoppscotch/plugin-appload": "github:CuriousCorrelation/tauri-plugin-hoppscotch-appload"
+  "@CuriousCorrelation/plugin-appload": "github:CuriousCorrelation/tauri-plugin-appload"
 }
 ```
 
@@ -43,7 +43,7 @@ tauri-plugin-hoppscotch-appload = { git = "https://github.com/CuriousCorrelation
 ```rust
 fn main() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_hoppscotch_appload::init())
+        .plugin(tauri_plugin_appload::init())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -52,7 +52,7 @@ fn main() {
 ### JavaScript/TypeScript
 
 ```typescript
-import { download, load } from '@hoppscotch/plugin-appload'
+import { download, load } from '@CuriousCorrelation/plugin-appload'
 
 // Download a bundle
 const { bundleName } = await download({

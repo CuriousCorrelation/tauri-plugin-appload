@@ -30,9 +30,9 @@ export interface LoadResponse {
 }
 
 export async function download(options: DownloadOptions): Promise<DownloadResponse> {
-  return await invoke<DownloadResponse>('plugin:hoppscotch-appload|download', { options })
+  return await invoke<DownloadResponse>('plugin:appload|download', { options })
 }
 
 export async function load(options: LoadOptions): Promise<LoadResponse> {
-  return await invoke<LoadResponse>('plugin:hoppscotch-appload|load', { options })
+  return await invoke<LoadResponse>('plugin:appload|load', { options })
 }

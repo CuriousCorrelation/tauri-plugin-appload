@@ -7,6 +7,6 @@
   ],
   "permissions": [
     "core:default",
-    "hoppscotch-appload:default"
+    "appload:default"
   ]
 }

@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-//! Hoppscotch app bundle loading plugin for Tauri.
-//! This plugin handles downloading and loading external Hoppscotch web app bundles in Tauri webviews.
+//! app bundle loading plugin for Tauri.
+//! This plugin handles downloading and loading external web app bundles in Tauri webviews.
 
 // TODO: Fix these. There are icons in the asset directory for the web app.
 #![doc(
-    html_logo_url = "https://github.com/hoppscotch/hoppscotch/raw/main/packages/hoppscotch-app/public/favicon.ico",
-    html_favicon_url = "https://github.com/hoppscotch/hoppscotch/raw/main/packages/hoppscotch-app/public/favicon.ico"
+    html_logo_url = "https://github.com/<Placeholder>/<Placeholder>/raw/main/packages/app/public/favicon.ico",
+    html_favicon_url = "https://github.com/<Placeholder>/<Placeholder>/raw/main/packages/app/public/favicon.ico"
 )]
 
 use std::sync::Arc;
@@ -41,14 +41,14 @@ mod verification;
 pub use error::{Error, Result};
 
 #[cfg(mobile)]
-use mobile::HoppscotchAppload;
+use mobile::Appload;
 
 const KERNEL_JS: &str = include_str!("kernel.js");
 
 pub fn init<R: Runtime>() -> TauriPlugin<R> {
-    Builder::new("hoppscotch-appload")
+    Builder::new("appload")
         .setup(move |app, api| {
-            tracing::info!("Initializing hoppscotch-appload plugin");
+            tracing::info!("Initializing appload plugin");
 
             tracing::debug!("Loading configuration settings.");
             let mut config = config::Config::default();
@@ -100,25 +100,26 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
             let bundle_loader = Arc::new(bundle::BundleLoader::new(cache.clone(), storage.clone()));
 
             tracing::debug!("Setting up uri handler.");
-            let uri_handler = Arc::new(uri::UriHandler::new(cache.clone()));
+            let config = app.config();
+            let uri_handler = Arc::new(uri::UriHandler::new(cache.clone(), config.clone()));
 
             #[cfg(desktop)]
             tracing::debug!("Initializing desktop-specific components.");
             #[cfg(desktop)]
-            let hoppscotch = desktop::init(app, api, bundle_loader.clone())?;
+            let view = desktop::init(app, api, bundle_loader.clone())?;
 
             #[cfg(mobile)]
             tracing::debug!("Initializing mobile-specific components.");
             #[cfg(mobile)]
-            let hoppscotch = mobile::init(app, api, bundle_loader.clone())?;
+            let view = mobile::init(app, api, bundle_loader.clone())?;
 
             app.manage(bundle_loader);
             app.manage(cache);
             app.manage(storage);
             app.manage(uri_handler);
-            app.manage(hoppscotch);
+            app.manage(view);
 
-            tracing::info!("hoppscotch-appload plugin setup complete.");
+            tracing::info!("appload plugin setup complete.");
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![commands::download, commands::load])

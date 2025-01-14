@@ -1,12 +1,10 @@
 use std::sync::Arc;
 
-
-use tauri::{
-    command, AppHandle, LogicalPosition, Manager, Runtime, WebviewUrl,
-    WebviewWindowBuilder,
-};
 #[cfg(target_os = "macos")]
 use tauri::TitleBarStyle;
+use tauri::{
+    command, AppHandle, LogicalPosition, Manager, Runtime, WebviewUrl, WebviewWindowBuilder,
+};
 
 use crate::{
     bundle::BundleLoader,

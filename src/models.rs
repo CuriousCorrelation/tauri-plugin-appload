@@ -172,7 +172,7 @@ pub struct WindowOptions {
 }
 
 fn default_window_title() -> String {
-    "Hoppscotch".into()
+    "Appload".into()
 }
 
 fn default_window_width() -> f64 {
