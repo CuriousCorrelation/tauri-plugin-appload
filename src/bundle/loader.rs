@@ -52,11 +52,10 @@ impl BundleLoader {
         metadata: &crate::BundleMetadata,
     ) -> Result<Option<BundleInfo>> {
         Ok(match self.storage.get_bundle_entry(server_url).await? {
-            // NOTE: Temp disabled for testing.
-            // Some(entry) if entry.version == metadata.version => {
-            //     tracing::info!(%server_url, "Bundle version matches, using cached version");
-            //     Some(self.load_existing_bundle(&entry.bundle_name).await?)
-            // }
+            Some(entry) if entry.version == metadata.version => {
+                tracing::info!(%server_url, "Bundle version matches, using cached version");
+                Some(self.load_existing_bundle(&entry.bundle_name).await?)
+            }
             Some(entry) => {
                 tracing::info!(
                     %server_url,
