@@ -16,7 +16,6 @@ pub struct VerifiedFile {
 
 #[derive(Debug)]
 pub struct VerifiedBundle {
-    pub metadata: BundleMetadata,
     pub content: Vec<u8>,
     pub files: HashMap<String, VerifiedFile>,
     pub total_size: usize,
@@ -102,7 +101,6 @@ impl VerifiedBundle {
         );
 
         Ok(Self {
-            metadata,
             content,
             files,
             total_size,
