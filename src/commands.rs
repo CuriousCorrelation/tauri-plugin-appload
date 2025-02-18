@@ -73,6 +73,19 @@ pub async fn load<R: Runtime>(app: AppHandle<R>, options: LoadOptions) -> Result
     let url = format!("app://{}/", options.bundle_name.to_lowercase());
     tracing::debug!(%url, "Generated app URL");
 
+    if let Some(app_window) = app.get_webview_window(&label) {
+        tracing::info!("{}", format!("Destroying {:#?} window", &label));
+
+        app_window.destroy()?;
+
+        tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+
+        if app.get_webview_window(&label).is_some() {
+            tracing::warn!("Window {} still exists after destroy request", &label);
+            return Err(crate::Error::WindowNotFound);
+        }
+    }
+
     let window = WebviewWindowBuilder::new(&app, &label, WebviewUrl::App(url.parse().unwrap()))
         .initialization_script(crate::KERNEL_JS)
         .title(sanitize_window_label(&label))
