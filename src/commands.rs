@@ -84,7 +84,7 @@ pub async fn load<R: Runtime>(app: AppHandle<R>, options: LoadOptions) -> Result
 
     let window = WebviewWindowBuilder::new(&app, &label, WebviewUrl::App(url.parse().unwrap()))
         .initialization_script(crate::KERNEL_JS)
-        .title(sanitize_window_label(&options.window.title)) // Use original title for display
+        .title(sanitize_window_label(&options.window.title))
         .inner_size(options.window.width, options.window.height)
         .resizable(options.window.resizable)
         .build()
@@ -109,7 +109,11 @@ pub async fn load<R: Runtime>(app: AppHandle<R>, options: LoadOptions) -> Result
         })?;
     }
 
-    for old_label in [&format!("{}-curr", base_label), &format!("{}-next", base_label), "main"] {
+    for old_label in [
+        &format!("{}-curr", base_label),
+        &format!("{}-next", base_label),
+        "main",
+    ] {
         if old_label == &label {
             continue;
         }
