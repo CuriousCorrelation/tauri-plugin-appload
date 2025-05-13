@@ -2,6 +2,8 @@
 
 Default permissions for AppLoad plugin
 
+#### This default permission set includes the following:
+
 - `allow-load`
 - `allow-download`
 - `allow-clear`
