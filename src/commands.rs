@@ -128,7 +128,7 @@ pub async fn close<R: Runtime>(app: AppHandle<R>, options: CloseOptions) -> Resu
 
     let Some(window) = app.get_webview_window(&options.window_label) else {
         tracing::info!(window_label = %options.window_label, "Window not found or already closed");
-        return Ok(CloseResponse { success: true })
+        return Ok(CloseResponse { success: true });
     };
 
     window.close().map_err(|e| {
