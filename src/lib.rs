@@ -130,6 +130,7 @@ pub fn init<R: Runtime>(config: Config) -> TauriPlugin<R> {
         .invoke_handler(tauri::generate_handler![
             commands::download,
             commands::load,
+            commands::close,
             commands::remove,
             commands::clear
         ])
