@@ -9,6 +9,7 @@ use tauri::{
 use crate::{
     bundle::BundleLoader,
     cache::CacheManager,
+    mapping::HostMapper,
     models::{
         CloseOptions, CloseResponse, DownloadOptions, DownloadResponse, LoadOptions, LoadResponse,
     },
@@ -80,10 +81,36 @@ pub async fn load<R: Runtime>(app: AppHandle<R>, options: LoadOptions) -> Result
         current_label
     };
 
-    tracing::info!(?options, bundle = %options.bundle_name, window_label = %label, "Loading bundle");
+    // Determine the webview host:
+    // - If `host` is provided, use it (for cloud-for-orgs support)
+    // - Otherwise, use the bundle name
+    let window_host = options
+        .host
+        .clone()
+        .unwrap_or_else(|| options.bundle_name.clone());
+    let sanitized_host = sanitize_window_label(&window_host);
 
-    let url = format!("app://{}/", options.bundle_name.to_lowercase());
+    tracing::info!(
+        ?options,
+        bundle = %options.bundle_name,
+        host = %sanitized_host,
+        window_label = %label,
+        "Loading bundle"
+    );
+
+    let url = format!("app://{}/", sanitized_host.to_lowercase());
     tracing::debug!(%url, "Generated app URL");
+
+    let host_mapper = app.state::<Arc<HostMapper>>();
+    host_mapper.register(
+        &sanitized_host.to_lowercase(),
+        &options.bundle_name.to_lowercase(),
+    );
+    tracing::debug!(
+        host = %sanitized_host.to_lowercase(),
+        bundle = %options.bundle_name.to_lowercase(),
+        "Registered host mapping"
+    );
 
     let window = WebviewWindowBuilder::new(&app, &label, WebviewUrl::App(url.parse().unwrap()))
         .initialization_script(crate::KERNEL_JS)
