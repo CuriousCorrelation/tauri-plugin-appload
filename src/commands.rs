@@ -203,6 +203,10 @@ pub async fn remove<R: Runtime>(
 pub async fn clear<R: Runtime>(app: AppHandle<R>) -> Result<()> {
     tracing::info!("Starting bundle cleanup process");
     let storage = app.state::<Arc<StorageManager>>();
+    let host_mapper = app.state::<Arc<HostMapper>>();
+
+    host_mapper.clear();
+    tracing::debug!("Cleared host mappings");
 
     let layout = storage.layout();
 
