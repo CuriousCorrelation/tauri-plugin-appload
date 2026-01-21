@@ -17,11 +17,24 @@ use crate::{
     ui, RemoveOptions, RemoveResponse, Result,
 };
 
-fn sanitize_window_label(input: &str) -> String {
-    input
+/// Maximum length for window labels/hosts
+const MAX_HOST_LENGTH: usize = 255;
+
+fn sanitize_window_label(input: &str) -> Result<String> {
+    if input.is_empty() {
+        return Err(crate::Error::Config("Host cannot be empty".into()));
+    }
+    if input.len() > MAX_HOST_LENGTH {
+        return Err(crate::Error::Config(format!(
+            "Host exceeds maximum length of {} characters",
+            MAX_HOST_LENGTH
+        )));
+    }
+
+    Ok(input
         .chars()
         .map(|c| if c.is_alphanumeric() { c } else { '_' })
-        .collect()
+        .collect())
 }
 
 #[command]
@@ -71,7 +84,7 @@ pub async fn download<R: Runtime>(
 
 #[command]
 pub async fn load<R: Runtime>(app: AppHandle<R>, options: LoadOptions) -> Result<LoadResponse> {
-    let base_label = sanitize_window_label(&options.window.title);
+    let base_label = sanitize_window_label(&options.window.title)?;
     let current_label = format!("{}-curr", base_label);
     let alternate_label = format!("{}-next", base_label);
 
@@ -88,7 +101,7 @@ pub async fn load<R: Runtime>(app: AppHandle<R>, options: LoadOptions) -> Result
         .host
         .clone()
         .unwrap_or_else(|| options.bundle_name.clone());
-    let sanitized_host = sanitize_window_label(&window_host);
+    let sanitized_host = sanitize_window_label(&window_host)?;
 
     tracing::info!(
         ?options,
@@ -112,17 +125,28 @@ pub async fn load<R: Runtime>(app: AppHandle<R>, options: LoadOptions) -> Result
         "Registered host mapping"
     );
 
-    let window = WebviewWindowBuilder::new(&app, &label, WebviewUrl::App(url.parse().unwrap()))
-        .initialization_script(crate::KERNEL_JS)
-        .title(sanitize_window_label(&options.window.title))
-        .inner_size(options.window.width, options.window.height)
-        .resizable(options.window.resizable)
-        .disable_drag_drop_handler()
-        .build()
-        .map_err(|e| {
-            tracing::error!(?e, ?label, "Failed to create window");
-            e
-        })?;
+    let sanitized_title = sanitize_window_label(&options.window.title)?;
+
+    let window =
+        match WebviewWindowBuilder::new(&app, &label, WebviewUrl::App(url.parse().unwrap()))
+            .initialization_script(crate::KERNEL_JS)
+            .title(sanitized_title)
+            .inner_size(options.window.width, options.window.height)
+            .resizable(options.window.resizable)
+            .disable_drag_drop_handler()
+            .build()
+        {
+            Ok(window) => window,
+            Err(e) => {
+                tracing::error!(
+                    ?e,
+                    ?label,
+                    "Failed to create window, cleaning up host mapping"
+                );
+                host_mapper.unregister(&sanitized_host.to_lowercase());
+                return Err(e.into());
+            }
+        };
 
     #[cfg(target_os = "macos")]
     {

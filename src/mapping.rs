@@ -110,4 +110,61 @@ mod tests {
         mapper.register("acme_hoppscotch_io", "hoppscotch");
         assert!(mapper.has_mapping("acme_hoppscotch_io"));
     }
+
+    #[test]
+    fn test_empty_host_passthrough() {
+        let mapper = HostMapper::new();
+        assert_eq!(mapper.resolve(""), "");
+    }
+
+    #[test]
+    fn test_case_sensitivity() {
+        let mapper = HostMapper::new();
+        mapper.register("acme_hoppscotch_io", "hoppscotch");
+
+        assert_eq!(mapper.resolve("ACME_HOPPSCOTCH_IO"), "ACME_HOPPSCOTCH_IO");
+        assert_eq!(mapper.resolve("acme_hoppscotch_io"), "hoppscotch");
+    }
+
+    #[test]
+    fn test_overwrite_mapping() {
+        let mapper = HostMapper::new();
+        mapper.register("acme_hoppscotch_io", "hoppscotch");
+        mapper.register("acme_hoppscotch_io", "different_bundle");
+
+        assert_eq!(mapper.resolve("acme_hoppscotch_io"), "different_bundle");
+    }
+
+    #[test]
+    fn test_clear() {
+        let mapper = HostMapper::new();
+        mapper.register("acme_hoppscotch_io", "hoppscotch");
+        mapper.register("beta_hoppscotch_io", "hoppscotch");
+        mapper.clear();
+
+        assert!(!mapper.has_mapping("acme_hoppscotch_io"));
+        assert!(!mapper.has_mapping("beta_hoppscotch_io"));
+        assert_eq!(mapper.resolve("acme_hoppscotch_io"), "acme_hoppscotch_io");
+    }
+
+    #[test]
+    fn test_multiple_hosts_same_bundle() {
+        let mapper = HostMapper::new();
+        mapper.register("acme_hoppscotch_io", "hoppscotch");
+        mapper.register("beta_hoppscotch_io", "hoppscotch");
+        mapper.register("gamma_hoppscotch_io", "hoppscotch");
+
+        assert_eq!(mapper.resolve("acme_hoppscotch_io"), "hoppscotch");
+        assert_eq!(mapper.resolve("beta_hoppscotch_io"), "hoppscotch");
+        assert_eq!(mapper.resolve("gamma_hoppscotch_io"), "hoppscotch");
+    }
+
+    #[test]
+    fn test_long_host_name() {
+        let mapper = HostMapper::new();
+        let long_host = "a".repeat(253); // DNS max length
+        mapper.register(&long_host, "hoppscotch");
+
+        assert_eq!(mapper.resolve(&long_host), "hoppscotch");
+    }
 }
