@@ -17,41 +17,19 @@ use crate::{
     ui, RemoveOptions, RemoveResponse, Result,
 };
 
-/// Writes a line to diag-logs.txt for debugging window lifecycle events.
+/// Writes a line to appload.diag.log for debugging window lifecycle events.
 /// This runs at the Rust level so it captures events even when JS logging
 /// fails (e.g. webview destroyed before JS can write). Best-effort: silently
 /// ignores any IO errors.
+///
+/// The log directory comes from `Config::log_dir`, set by the host app during
+/// plugin initialization. If no log_dir was configured, this is a no-op.
 fn diag_log(msg: &str) {
-    let log_dir: Option<std::path::PathBuf> = {
-        #[cfg(target_os = "macos")]
-        {
-            std::env::var("HOME").ok().map(|home| {
-                std::path::PathBuf::from(home)
-                    .join("Library/Logs/io.hoppscotch.desktop")
-            })
-        }
-        #[cfg(target_os = "windows")]
-        {
-            std::env::var("LOCALAPPDATA").ok().map(|local| {
-                std::path::PathBuf::from(local)
-                    .join("io.hoppscotch.desktop/logs")
-            })
-        }
-        #[cfg(target_os = "linux")]
-        {
-            std::env::var("HOME").ok().map(|home| {
-                std::path::PathBuf::from(home)
-                    .join(".local/share/io.hoppscotch.desktop/logs")
-            })
-        }
-        #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
-        {
-            None
-        }
+    let Some(dir) = crate::DIAG_LOG_DIR.get() else {
+        return;
     };
-    let Some(dir) = log_dir else { return };
-    let _ = std::fs::create_dir_all(&dir);
-    let path = dir.join("diag-logs.txt");
+    let _ = std::fs::create_dir_all(dir);
+    let path = dir.join("appload.diag.log");
     let _ = std::fs::OpenOptions::new()
         .create(true)
         .append(true)

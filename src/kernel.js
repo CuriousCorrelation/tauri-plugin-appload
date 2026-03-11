@@ -30,7 +30,7 @@
     // __TAURI_INTERNALS__ is always present before initialization_scripts run
     if (window.__TAURI_INTERNALS__) {
       window.__TAURI_INTERNALS__.invoke("append_log", {
-        filename: "diag-logs.txt",
+        filename: "appload.diag.log",
         content: line,
       }).catch(function (err) {
         console.warn("[kernel.js] Failed to write init log:", err)
