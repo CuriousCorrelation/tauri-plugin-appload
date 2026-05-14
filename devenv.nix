@@ -7,12 +7,12 @@ let
     else pkgs;
 
   darwinPackages = with pkgs; [
-    darwin.apple_sdk.frameworks.Security
-    darwin.apple_sdk.frameworks.CoreServices
-    darwin.apple_sdk.frameworks.CoreFoundation
-    darwin.apple_sdk.frameworks.Foundation
-    darwin.apple_sdk.frameworks.AppKit
-    darwin.apple_sdk.frameworks.WebKit
+    # Unified apple-sdk replaces the per-framework
+    # darwin.apple_sdk.frameworks.* entries that were removed during the
+    # nixpkgs Darwin SDK migration. The default unversioned SDK bundles
+    # Security, CoreServices, CoreFoundation, Foundation, AppKit, and
+    # WebKit, which is what this shell consumed before.
+    apple-sdk
   ];
 
   linuxPackages = with pkgs; [
