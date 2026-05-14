@@ -27,8 +27,8 @@ in {
   packages = with pkgs; [
     git
     nodejs_22
-    nodePackages_latest.typescript-language-server
-    nodePackages_latest.vue-language-server
+    typescript-language-server
+    vue-language-server
     cargo-edit
   ] ++ lib.optionals pkgs.stdenv.isDarwin darwinPackages
     ++ lib.optionals pkgs.stdenv.isLinux linuxPackages;
